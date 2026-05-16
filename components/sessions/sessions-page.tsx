@@ -39,6 +39,13 @@ const statusOptions = [
   { label: "异常", value: "error" },
 ];
 
+type SessionFormValues = {
+  workspace: string;
+  prompt: string;
+  model?: string;
+  reasoningEffort?: string;
+};
+
 export function SessionsPage() {
   const { message } = App.useApp();
   const {
@@ -67,6 +74,14 @@ export function SessionsPage() {
   const selectedSession = sessions.find(
     (session) => session.id === activeSessionId,
   );
+  const workspaceOptions = useMemo(
+    () =>
+      workspaces.map((workspace) => ({
+        value: workspace.path,
+        label: workspace.name || workspace.path,
+      })),
+    [workspaces],
+  );
 
   useEffect(() => {
     if (!activeSessionId) {
@@ -78,6 +93,10 @@ export function SessionsPage() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSessionId]);
+
+  function handleWorkspaceChange(workspace: string | undefined) {
+    setSelectedWorkspace(workspace);
+  }
 
   async function loadEvents(sessionId: string) {
     setLoadingEvents(true);
@@ -101,12 +120,7 @@ export function SessionsPage() {
     }
   }
 
-  async function startSession(values: {
-    workspace: string;
-    prompt: string;
-    model?: string;
-    reasoningEffort?: string;
-  }) {
+  async function startSession(values: SessionFormValues) {
     setStarting(true);
     try {
       const record = await startSessionRequest({
@@ -131,6 +145,28 @@ export function SessionsPage() {
         title="会话"
         description="浏览 Codex 会话历史、实时事件，并从 Web 控制台启动新任务。"
       />
+
+      <Card className="tight-card session-workspace-card">
+        <Space
+          size={12}
+          className="session-workspace-control"
+          wrap
+          align="center"
+        >
+          <Typography.Text className="session-workspace-label">
+            工作区
+          </Typography.Text>
+          <Select
+            className="workspace-select"
+            placeholder="选择工作区"
+            value={selectedWorkspace}
+            onChange={handleWorkspaceChange}
+            options={workspaceOptions}
+            popupMatchSelectWidth={false}
+            allowClear
+          />
+        </Space>
+      </Card>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={11}>
@@ -218,11 +254,9 @@ export function SessionsPage() {
                         rules={[{ required: true, message: "请选择工作区" }]}
                       >
                         <Select
-                          options={workspaces.map((workspace) => ({
-                            value: workspace.path,
-                            label: workspace.name || workspace.path,
-                          }))}
-                          onChange={setSelectedWorkspace}
+                          value={selectedWorkspace}
+                          options={workspaceOptions}
+                          onChange={handleWorkspaceChange}
                         />
                       </Form.Item>
                       <Row gutter={12}>

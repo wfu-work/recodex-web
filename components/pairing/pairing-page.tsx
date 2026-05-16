@@ -55,9 +55,9 @@ export function PairingPage() {
         description="展示 App 扫码配对入口，并管理已经连接过的移动端设备。"
       />
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} className="equal-height-row pairing-overview-row">
         <Col xs={24} lg={9}>
-          <Card title="移动端扫码连接" className="tight-card qr-card">
+          <Card title="移动端扫码连接" className="tight-card qr-card fill-card">
             <Space orientation="vertical" size={16} className="full-width">
               <div className="qr-wrap">
                 {pairing?.pairingUri ? (
@@ -93,7 +93,7 @@ export function PairingPage() {
         </Col>
 
         <Col xs={24} lg={15}>
-          <Card title="本机控制台" className="tight-card">
+          <Card title="本机控制台" className="tight-card fill-card local-console-card">
             <Space orientation="vertical" size={14} className="full-width">
               <div className="local-note">
                 <div className="local-note-title">网页控制台无需登录</div>
@@ -126,6 +126,29 @@ export function PairingPage() {
                   </div>
                 </Col>
               </Row>
+              <div className="pairing-guide">
+                <div className="pairing-guide-step">
+                  <span>1</span>
+                  <div>
+                    <strong>打开 Recodex App</strong>
+                    <p>使用移动端扫码入口读取当前 Bridge 配对信息。</p>
+                  </div>
+                </div>
+                <div className="pairing-guide-step">
+                  <span>2</span>
+                  <div>
+                    <strong>确认本机地址</strong>
+                    <p>App 会通过 Base URL 连接到本机 Bridge 服务。</p>
+                  </div>
+                </div>
+                <div className="pairing-guide-step">
+                  <span>3</span>
+                  <div>
+                    <strong>管理设备授权</strong>
+                    <p>已配对设备会出现在下方列表，可随时撤销访问。</p>
+                  </div>
+                </div>
+              </div>
             </Space>
           </Card>
         </Col>

@@ -7,16 +7,13 @@ import { usePathname } from "next/navigation";
 import {
   Alert,
   Button,
-  Grid,
   Layout,
   Menu,
-  Select,
   Space,
   Tag,
   Tooltip,
 } from "antd";
 import { useBridge } from "@/components/bridge/bridge-provider";
-import { compactText } from "@/lib/ui/format";
 
 const { Header, Content, Sider } = Layout;
 
@@ -47,18 +44,12 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const screens = Grid.useBreakpoint();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const {
     connectionState,
     error,
     health,
     context,
-    workspaces,
-    selectedWorkspace,
-    setSelectedWorkspace,
-    refreshHttp,
-    refreshLists,
   } = useBridge();
 
   const currentKey =
@@ -123,40 +114,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {sidebar}
       <Layout>
         <Header className="app-header">
-          <Space size={12} className="header-left">
+          <div className="header-left" />
+
+          <Space size={12} className="header-actions">
             <ConnectionTag state={connectionState} online={health?.ok} />
             {context?.model ? (
               <Tooltip title="当前 Codex 模型">
                 <Tag color="blue">{context.model}</Tag>
               </Tooltip>
             ) : null}
-          </Space>
-
-          <Space size={12} className="header-actions">
-            {screens.md ? (
-              <Select
-                className="workspace-select"
-                placeholder="选择工作区"
-                value={selectedWorkspace}
-                onChange={setSelectedWorkspace}
-                options={workspaces.map((workspace) => ({
-                  value: workspace.path,
-                  label: workspace.name || compactText(workspace.path, 42),
-                }))}
-                popupMatchSelectWidth={false}
-                allowClear
-              />
-            ) : null}
-            <Button
-              size="small"
-              type="primary"
-              onClick={() => {
-                void refreshHttp();
-                void refreshLists();
-              }}
-            >
-              刷新数据
-            </Button>
           </Space>
         </Header>
 
