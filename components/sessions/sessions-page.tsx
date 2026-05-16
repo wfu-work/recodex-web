@@ -63,15 +63,23 @@ export function SessionsPage() {
   const [starting, setStarting] = useState(false);
 
   const filteredSessions = useMemo(
-    () =>
-      status === "all"
-        ? sessions
-        : sessions.filter((session) => session.status === status),
-    [sessions, status],
+    () => {
+      const workspaceSessions = selectedWorkspace
+        ? sessions.filter((session) => session.workspace === selectedWorkspace)
+        : sessions;
+      return status === "all"
+        ? workspaceSessions
+        : workspaceSessions.filter((session) => session.status === status);
+    },
+    [selectedWorkspace, sessions, status],
   );
 
-  const activeSessionId = selectedSessionId || sessions[0]?.id;
-  const selectedSession = sessions.find(
+  const activeSessionId =
+    selectedSessionId &&
+    filteredSessions.some((session) => session.id === selectedSessionId)
+      ? selectedSessionId
+      : filteredSessions[0]?.id;
+  const selectedSession = filteredSessions.find(
     (session) => session.id === activeSessionId,
   );
   const workspaceOptions = useMemo(
@@ -96,6 +104,8 @@ export function SessionsPage() {
 
   function handleWorkspaceChange(workspace: string | undefined) {
     setSelectedWorkspace(workspace);
+    setSelectedSessionId(undefined);
+    setEvents([]);
   }
 
   async function loadEvents(sessionId: string) {
