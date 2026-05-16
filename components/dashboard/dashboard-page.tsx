@@ -85,10 +85,10 @@ export function DashboardPage() {
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={[16, 16]} className="equal-height-row">
         <Col xs={24} xl={14}>
-          <Card title="运行状态" className="tight-card">
-            <Descriptions column={{ xs: 1, md: 2 }} size="small">
+          <Card title="运行状态" className="tight-card fill-card">
+            <Descriptions column={{ xs: 1, md: 2, xl: 2 }} size="small">
               <Descriptions.Item label="Bridge 版本">
                 {version?.version || health?.version || "-"}
               </Descriptions.Item>
@@ -112,7 +112,7 @@ export function DashboardPage() {
                 </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="Base URL">
-                {pairing?.baseUrl || "-"}
+                <span className="text-nowrap">{pairing?.baseUrl || "-"}</span>
               </Descriptions.Item>
               <Descriptions.Item label="局域网地址">
                 {pairing?.lanHost || "-"}
@@ -121,7 +121,7 @@ export function DashboardPage() {
           </Card>
         </Col>
         <Col xs={24} xl={10}>
-          <Card title="用量" className="tight-card">
+          <Card title="用量" className="tight-card fill-card">
             <Row gutter={[12, 12]}>
               <Col span={12}>
                 <Statistic

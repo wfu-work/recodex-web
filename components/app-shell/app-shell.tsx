@@ -25,7 +25,7 @@ const navItems = [
   {
     key: "/pairing",
     icon: <NavIcon name="pairing" />,
-    label: <Link href="/pairing">扫码与设备</Link>,
+    label: <Link href="/pairing">设备配对</Link>,
   },
   {
     key: "/workspaces",

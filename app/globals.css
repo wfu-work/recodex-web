@@ -539,6 +539,28 @@ pre {
   padding: 18px;
 }
 
+.equal-height-row {
+  align-items: stretch;
+}
+
+.equal-height-row > .ant-col {
+  display: flex;
+}
+
+.fill-card {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.fill-card > .ant-card-body {
+  flex: 1;
+}
+
+.text-nowrap {
+  white-space: nowrap;
+}
+
 .metric-card .ant-card-body {
   padding: 18px;
 }
