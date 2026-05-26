@@ -13,6 +13,7 @@ import {
   getDevices,
   getHealth,
   getPairing,
+  getRelayConfig,
   getSessions,
   getWorkspaces,
   getVersion,
@@ -23,6 +24,7 @@ import type {
   HealthPayload,
   PairingPayload,
   PublicDevice,
+  RelayConfigPayload,
   SessionRecord,
   VersionPayload,
   Workspace,
@@ -32,6 +34,7 @@ type BridgeContextValue = {
   health?: HealthPayload;
   version?: VersionPayload;
   pairing?: PairingPayload;
+  relay?: RelayConfigPayload;
   context?: ContextPayload;
   workspaces: Workspace[];
   devices: PublicDevice[];
@@ -42,6 +45,7 @@ type BridgeContextValue = {
   setSelectedWorkspace: (workspace: string | undefined) => void;
   refreshHttp: () => Promise<void>;
   refreshLists: () => Promise<void>;
+  refreshRelay: () => Promise<void>;
 };
 
 const BridgeContext = createContext<BridgeContextValue | null>(null);
@@ -50,6 +54,7 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
   const [health, setHealth] = useState<HealthPayload>();
   const [version, setVersion] = useState<VersionPayload>();
   const [pairing, setPairing] = useState<PairingPayload>();
+  const [relay, setRelay] = useState<RelayConfigPayload>();
   const [context, setContext] = useState<ContextPayload>();
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [devices, setDevices] = useState<PublicDevice[]>([]);
@@ -66,6 +71,7 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
         nextHealth,
         nextVersion,
         nextPairing,
+        nextRelay,
         nextContext,
         workspaceResult,
         deviceResult,
@@ -75,6 +81,7 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
           getHealth(),
           getVersion(),
           getPairing(),
+          getRelayConfig(),
           getContext(),
           getWorkspaces(),
           getDevices(),
@@ -84,6 +91,7 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
       setVersion(nextVersion);
       setConnectionState("connected");
       setPairing(nextPairing);
+      setRelay(nextRelay);
       setContext(nextContext);
       setWorkspaces(workspaceResult.workspaces || []);
       setDevices(deviceResult.devices || []);
@@ -97,6 +105,14 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       setConnectionState("error");
       setError(err instanceof Error ? err.message : "Failed to load Bridge.");
+    }
+  }, []);
+
+  const refreshRelay = useCallback(async () => {
+    try {
+      setRelay(await getRelayConfig());
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load Relay.");
     }
   }, []);
 
@@ -129,6 +145,7 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
       health,
       version,
       pairing,
+      relay,
       context,
       workspaces,
       devices,
@@ -139,11 +156,13 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
       setSelectedWorkspace,
       refreshHttp,
       refreshLists,
+      refreshRelay,
     }),
     [
       health,
       version,
       pairing,
+      relay,
       context,
       workspaces,
       devices,
@@ -153,6 +172,7 @@ export function BridgeProvider({ children }: { children: React.ReactNode }) {
       error,
       refreshHttp,
       refreshLists,
+      refreshRelay,
     ],
   );
 

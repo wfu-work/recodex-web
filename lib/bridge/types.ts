@@ -28,6 +28,34 @@ export type PairingPayload = {
   expiresAt: string;
 };
 
+export type RelayConfigPayload = {
+  enabled: boolean;
+  url: string;
+  publicUrl: string;
+  roomId: string;
+  roomTokenConfigured: boolean;
+  accountGuid: string;
+  clientId: string;
+  clientSecretConfigured: boolean;
+  clientType: string;
+  targetClientId: string;
+  reconnectSeconds: number;
+};
+
+export type RelayConfigUpdatePayload = {
+  enabled: boolean;
+  url?: string;
+  publicUrl?: string;
+  roomId?: string;
+  roomToken?: string;
+  accountGuid?: string;
+  clientId?: string;
+  clientSecret?: string;
+  clientType?: string;
+  targetClientId?: string;
+  reconnectSeconds?: number;
+};
+
 export type UsageSummary = {
   todayTokens: number;
   monthTokens: number;

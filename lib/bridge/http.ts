@@ -6,6 +6,8 @@ import type {
   HealthPayload,
   PairingPayload,
   PublicDevice,
+  RelayConfigPayload,
+  RelayConfigUpdatePayload,
   SessionEvent,
   SessionRecord,
   VersionPayload,
@@ -27,6 +29,28 @@ async function getJSON<T>(path: string): Promise<T> {
 async function postJSON<T>(path: string, payload: unknown): Promise<T> {
   const response = await fetch(`${bridgeBaseUrl()}${path}`, {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+
+  const data = (await response.json()) as T | { message?: string };
+  if (!response.ok) {
+    const message =
+      typeof data === "object" &&
+      data !== null &&
+      "message" in data &&
+      typeof data.message === "string"
+        ? data.message
+        : `${response.status} ${response.statusText}`;
+    throw new Error(message);
+  }
+  return data as T;
+}
+
+async function putJSON<T>(path: string, payload: unknown): Promise<T> {
+  const response = await fetch(`${bridgeBaseUrl()}${path}`, {
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
     cache: "no-store",
@@ -76,6 +100,14 @@ export function getVersion() {
 
 export function getPairing() {
   return getJSON<PairingPayload>("/pairing");
+}
+
+export function getRelayConfig() {
+  return getJSON<RelayConfigPayload>("/relay");
+}
+
+export function saveRelayConfig(payload: RelayConfigUpdatePayload) {
+  return putJSON<RelayConfigPayload>("/relay", payload);
 }
 
 export function getContext() {
